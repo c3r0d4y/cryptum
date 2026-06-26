@@ -1,0 +1,715 @@
+    /* ═══════════════════════════════════════════════════════════
+       PALETA EJECUTIVA C3r0d4y — Azul naval + Acero + Dorado
+       ═══════════════════════════════════════════════════════════ */
+    :root {
+        --bg:          #06090f;
+        --bg2:         #0a0e1a;
+        --bg3:         #0f1520;
+        --line:        rgba(110,145,200,.08);
+        --line2:       rgba(110,145,200,.16);
+        --line3:       rgba(110,145,200,.30);
+        --accent:      #4a82be;
+        --accent-bg:   rgba(74,130,190,.09);
+        --accent-bd:   rgba(74,130,190,.28);
+        --gold:        #b8935a;
+        --gold-bg:     rgba(184,147,90,.07);
+        --gold-bd:     rgba(184,147,90,.26);
+        --text:        #d0daea;
+        --muted:       #546480;
+        --sub:         #283448;
+        --ok:          #3a9e6f;
+        --ok-bg:       rgba(58,158,111,.08);
+        --ok-bd:       rgba(58,158,111,.28);
+        --err:         #9e4040;
+        --err-bg:      rgba(158,64,64,.08);
+        --err-bd:      rgba(158,64,64,.28);
+        --warn:        #9e7830;
+        --warn-bg:     rgba(158,120,48,.08);
+        --warn-bd:     rgba(158,120,48,.28);
+        --shadow:      0 20px 60px rgba(0,0,0,.65);
+        --r:           2px;   /* radio de borde mínimo */
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+        font-size: 15px;
+        line-height: 1.5;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+    }
+    /* Grilla estructural de fondo */
+    body::after {
+        content: "";
+        position: fixed; inset: 0;
+        background:
+            linear-gradient(var(--line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--line) 1px, transparent 1px);
+        background-size: 52px 52px;
+        pointer-events: none; z-index: 0;
+    }
+
+    /* ─── Topbar ─────────────────────────────────────────────── */
+    .topbar {
+        position: relative; z-index: 20;
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 10px 20px;
+        background: rgba(0,0,0,.62);
+        border-bottom: 1px solid var(--line2);
+        font: 600 10.5px/1 ui-monospace, monospace;
+        color: var(--muted); letter-spacing: .08em;
+    }
+    .topbar-brand { color: var(--gold); font-weight: 800; letter-spacing: .16em; text-decoration: none; }
+    .topbar-right { display: flex; align-items: center; gap: 14px; }
+    .pill {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 3px 9px; border: 1px solid var(--line2); text-transform: uppercase;
+    }
+    .pill.blue { color: var(--accent); border-color: var(--accent-bd); }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; animation: blink 3s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:.9} 50%{opacity:.28} }
+
+    /* ─── Main ───────────────────────────────────────────────── */
+    main {
+        position: relative; z-index: 1;
+        flex: 1; display: flex; flex-direction: column;
+        align-items: center; padding: 28px 16px 16px;
+    }
+    .hero {
+        text-align: center; max-width: 460px;
+        margin-bottom: 22px;
+    }
+    .eyebrow {
+        display: inline-flex; align-items: center; gap: 7px;
+        padding: 4px 11px;
+        border: 1px solid var(--gold-bd); background: var(--gold-bg);
+        color: var(--gold);
+        font: 600 9.5px/1 ui-monospace, monospace; letter-spacing: .18em; text-transform: uppercase;
+        margin-bottom: 14px;
+    }
+    .hero h1 {
+        font-size: clamp(32px, 6vw, 50px); font-weight: 800;
+        line-height: 1.0; letter-spacing: -.03em; color: #fff;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero-sub { margin-top: 10px; font-size: 13.5px; color: var(--muted); line-height: 1.65; }
+
+    /* ─── Tarjeta contenedora ────────────────────────────────── */
+    .vault-card {
+        width: 100%; max-width: 520px;
+        background: var(--bg2);
+        border: 1px solid var(--line2);
+        border-top: 2px solid var(--accent);
+        box-shadow: var(--shadow);
+    }
+    .card-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+
+    /* ─── Botones de home ────────────────────────────────────── */
+    .home-actions { display: flex; flex-direction: column; gap: 10px; }
+    .home-btn {
+        display: flex; align-items: center; gap: 16px;
+        padding: 18px 20px;
+        background: var(--bg3); border: 1px solid var(--line2);
+        color: var(--text); cursor: pointer; text-align: left;
+        transition: border-color .18s, background .18s;
+        width: 100%; position: relative;
+    }
+    .home-btn:hover { border-color: var(--accent); background: var(--accent-bg); }
+    .home-btn-icon {
+        width: 44px; height: 44px; flex-shrink: 0;
+        display: grid; place-items: center;
+        border: 1px solid var(--line2); background: var(--accent-bg); color: var(--accent);
+    }
+    .home-btn-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .home-btn-text strong { display: block; font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+    .home-btn-text span   { font-size: 12.5px; color: var(--muted); }
+    .home-btn-arrow { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: var(--sub); }
+    .home-btn-arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+
+    /* ─── Zona de carga ──────────────────────────────────────── */
+    .drop-zone {
+        position: relative; padding: 32px 20px;
+        border: 1px dashed var(--line3); background: var(--bg);
+        text-align: center; cursor: pointer;
+        transition: border-color .2s, background .2s;
+    }
+    .drop-zone:hover, .drop-zone.over { border-color: var(--accent); background: var(--accent-bg); }
+    .drop-zone.has-file { border-style: solid; border-color: var(--ok); background: var(--ok-bg); }
+    .drop-zone input[type=file] {
+        position: absolute; inset: 0; opacity: 0;
+        cursor: pointer; width: 100%; height: 100%;
+    }
+    .drop-icon { color: var(--muted); margin-bottom: 10px; transition: color .2s; }
+    .drop-zone.has-file .drop-icon { color: var(--ok); }
+    .drop-title { font-size: 13.5px; font-weight: 600; }
+    .drop-hint  { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .drop-file-name { font: 700 13px/1.35 ui-monospace, monospace; color: var(--ok); word-break: break-all; }
+    .drop-file-size { font: 500 11px/1 ui-monospace, monospace; color: var(--muted); margin-top: 3px; }
+
+    /* ─── Campos de entrada ──────────────────────────────────── */
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field label { font: 600 10.5px/1 ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .input-row {
+        display: flex; border: 1px solid var(--line2); background: var(--bg);
+        transition: border-color .18s;
+    }
+    .input-row:focus-within { border-color: var(--accent); }
+    .input-row input {
+        flex: 1; padding: 11px 14px; background: none; border: none;
+        color: var(--text); font: 14px/1 ui-sans-serif, system-ui, sans-serif;
+        outline: none; min-width: 0;
+    }
+    .input-row input::placeholder { color: var(--sub); }
+    .btn-eye {
+        padding: 0 13px; background: none; border: none;
+        border-left: 1px solid var(--line2); color: var(--sub);
+        cursor: pointer; display: flex; align-items: center; transition: color .18s;
+    }
+    .btn-eye:hover { color: var(--muted); }
+    .btn-eye svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+
+    /* ─── Medidor de fortaleza ───────────────────────────────── */
+    .strength-bar { display: grid; grid-template-columns: repeat(4,1fr); gap: 4px; margin-top: 6px; }
+    .seg { height: 3px; background: var(--sub); border-radius: 2px; transition: background .3s; }
+    .seg.l1 { background: #9e3a3a; }
+    .seg.l2 { background: #9e6830; }
+    .seg.l3 { background: #7a9030; }
+    .seg.l4 { background: var(--ok); }
+    .strength-txt { font: 500 10px/1 ui-monospace, monospace; color: var(--muted); margin-top: 5px; }
+    .match-txt { font: 500 10.5px/1 ui-monospace, monospace; margin-top: 4px; }
+    .match-txt.ok  { color: var(--ok); }
+    .match-txt.err { color: var(--err); }
+
+    /* ─── Botones de acción ──────────────────────────────────── */
+    .btn {
+        padding: 12px 18px; border: 1px solid transparent;
+        font: 600 12.5px/1 ui-sans-serif, system-ui, sans-serif;
+        letter-spacing: .06em; cursor: pointer; display: inline-flex;
+        align-items: center; justify-content: center; gap: 8px;
+        transition: background .18s, border-color .18s, opacity .18s;
+        text-transform: uppercase;
+    }
+    .btn svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .btn-primary { background: var(--accent); color: #fff; width: 100%; }
+    .btn-primary:hover:not(:disabled) { background: #5a92ce; }
+    .btn-primary:disabled { opacity: .4; cursor: not-allowed; }
+    .btn-secondary { background: var(--bg3); border-color: var(--line2); color: var(--text); }
+    .btn-secondary:hover { border-color: var(--accent); background: var(--accent-bg); }
+    .btn-ghost { background: none; border-color: transparent; color: var(--muted); padding: 8px 14px; font-size: 11.5px; }
+    .btn-ghost:hover { color: var(--text); }
+    .btn-gold { background: none; border-color: var(--gold-bd); color: var(--gold); }
+    .btn-gold:hover { background: var(--gold-bg); }
+    .btn-sm { padding: 9px 14px; font-size: 11.5px; }
+    .row-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    /* ─── Opciones de salida (descarga / enlace) ─────────────── */
+    .output-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .opt-card {
+        padding: 16px 14px; border: 1px solid var(--line2); background: var(--bg3);
+        cursor: pointer; text-align: center; transition: border-color .18s, background .18s;
+        position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .opt-card:hover, .opt-card.selected { border-color: var(--accent); background: var(--accent-bg); }
+    .opt-card svg { width: 26px; height: 26px; fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .opt-card strong { font-size: 13px; font-weight: 700; }
+    .opt-card small  { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+    /* ─── Temporizador de enlace ─────────────────────────────── */
+    .timer-ring { text-align: center; }
+    .timer-value { font: 800 36px/1 ui-monospace, monospace; color: var(--accent); letter-spacing: .04em; }
+    .timer-label { font: 500 11px/1 ui-monospace, monospace; color: var(--muted); letter-spacing: .1em; margin-top: 4px; text-transform: uppercase; }
+    .timer-ring.warn .timer-value { color: var(--warn); }
+    .timer-ring.crit .timer-value { color: var(--err); }
+
+    /* ─── Spinner de carga ───────────────────────────────────── */
+    .loading {
+        display: flex; flex-direction: column; align-items: center;
+        gap: 14px; padding: 12px 0;
+    }
+    .spinner {
+        width: 36px; height: 36px;
+        border: 3px solid var(--line2); border-top-color: var(--accent);
+        border-radius: 50%; animation: spin .75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-msg { font: 600 12px/1.45 ui-monospace, monospace; color: var(--muted); letter-spacing: .08em; text-align: center; }
+
+    /* ─── Alertas ────────────────────────────────────────────── */
+    .alert {
+        display: flex; align-items: flex-start; gap: 10px;
+        padding: 12px 14px; font-size: 13px; line-height: 1.5;
+    }
+    .alert svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; margin-top: 1px; }
+    .alert-err  { border: 1px solid var(--err-bd); background: var(--err-bg); color: #c07070; }
+    .alert-ok   { border: 1px solid var(--ok-bd);  background: var(--ok-bg);  color: #60b88c; }
+    .alert-warn { border: 1px solid var(--warn-bd); background: var(--warn-bg); color: #c09848; }
+    .alert-info { border: 1px solid var(--line2); background: var(--bg3); color: var(--muted); }
+
+    /* ─── Cuadro de enlace ───────────────────────────────────── */
+    .link-box {
+        display: flex; align-items: center; gap: 0;
+        border: 1px solid var(--line2); background: var(--bg);
+    }
+    .link-box span {
+        flex: 1; padding: 10px 12px;
+        font: 12px/1.4 ui-monospace, monospace; color: var(--text);
+        word-break: break-all; min-width: 0;
+    }
+    .btn-copy {
+        padding: 10px 14px; background: none; border: none;
+        border-left: 1px solid var(--line2); color: var(--accent);
+        font: 600 11px/1 ui-monospace, monospace; letter-spacing: .08em;
+        cursor: pointer; flex-shrink: 0; text-transform: uppercase;
+        transition: background .18s;
+    }
+    .btn-copy:hover { background: var(--accent-bg); }
+    .btn-copy.copied { color: var(--ok); }
+
+    /* ─── Cuadrícula de compartir ────────────────────────────── */
+    .share-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
+    .share-btn {
+        display: flex; flex-direction: column; align-items: center; gap: 7px;
+        padding: 12px 8px; border: 1px solid var(--line2);
+        background: var(--bg3); cursor: pointer;
+        font: 600 11px/1 ui-sans-serif, system-ui, sans-serif;
+        color: var(--text); letter-spacing: .04em;
+        transition: border-color .18s, background .18s;
+    }
+    .share-btn:hover { border-color: var(--accent); background: var(--accent-bg); }
+    .share-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .share-btn.wa  { border-color: rgba(37,211,102,.2); color: #25d366; }
+    .share-btn.wa:hover { border-color: #25d366; background: rgba(37,211,102,.06); }
+    .share-btn.tg  { border-color: rgba(38,161,222,.2); color: #26a1de; }
+    .share-btn.tg:hover { border-color: #26a1de; background: rgba(38,161,222,.06); }
+    .share-btn.em  { border-color: var(--gold-bd); color: var(--gold); }
+    .share-btn.em:hover { background: var(--gold-bg); }
+
+    /* ─── Separador ──────────────────────────────────────────── */
+    .divider { display: flex; align-items: center; gap: 12px; }
+    .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--line2); }
+    .divider span { font: 600 9.5px/1 ui-monospace, monospace; color: var(--sub); letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; }
+
+    /* ─── Aviso de seguridad (acordeón) ─────────────────────── */
+    .sec-notice {
+        position: relative; z-index: 1;
+        width: 100%; max-width: 520px;
+        margin-top: 16px;
+        border: 1px solid var(--warn-bd); background: var(--warn-bg);
+    }
+    .sec-toggle {
+        width: 100%; padding: 12px 16px;
+        background: none; border: none;
+        display: flex; align-items: center; justify-content: space-between;
+        color: #c09848; font: 600 11px/1 ui-monospace, monospace;
+        letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
+        gap: 10px;
+    }
+    .sec-toggle svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; transition: transform .25s; flex-shrink: 0; }
+    .sec-toggle.open svg { transform: rotate(180deg); }
+    .sec-body {
+        padding: 0 16px 16px;
+        font-size: 12.5px; color: #a08060; line-height: 1.7;
+        display: none;
+    }
+    .sec-body.visible { display: block; }
+    .sec-body p { margin-bottom: 10px; }
+    .sec-body p:last-child { margin-bottom: 0; }
+    .sec-body strong { color: #c09848; }
+
+    /* ─── Footer ─────────────────────────────────────────────── */
+    footer {
+        position: relative; z-index: 1;
+        padding: 14px 16px; border-top: 1px solid var(--line);
+        display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+        gap: 8px;
+    }
+    .badge-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; }
+    .fbadge {
+        padding: 2px 8px; border: 1px solid var(--line2);
+        font: 600 9.5px/1.6 ui-monospace, monospace; letter-spacing: .1em;
+        text-transform: uppercase; color: var(--sub);
+    }
+    .fbadge.a { color: var(--accent); border-color: var(--accent-bd); }
+
+    /* ─── Navegación de regreso ──────────────────────────────── */
+    .back-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 0 0 16px;
+        background: none; border: none; color: var(--muted);
+        font: 600 11px/1 ui-monospace, monospace; letter-spacing: .1em;
+        text-transform: uppercase; cursor: pointer; transition: color .18s;
+    }
+    .back-btn:hover { color: var(--text); }
+    .back-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+
+    /* ─── Sección-label ──────────────────────────────────────── */
+    .section-label {
+        font: 600 10px/1 ui-monospace, monospace; letter-spacing: .16em;
+        text-transform: uppercase; color: var(--sub); margin-bottom: 4px;
+    }
+
+    /* ─── Barra de progreso USB ──────────────────────────────── */
+    .prog-wrap { border: 1px solid var(--line2); background: var(--bg); }
+    .prog-track { height: 4px; background: var(--sub); }
+    .prog-fill  { height: 4px; background: var(--accent); width: 0%; transition: width .3s ease; }
+    .prog-stats { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px 0; }
+    .prog-pct   { font: 700 13px/1 ui-monospace, monospace; color: var(--accent); }
+    .prog-count { font: 500 11px/1 ui-monospace, monospace; color: var(--muted); }
+    .prog-file  { font: 500 10.5px/1.4 ui-monospace, monospace; color: var(--sub); padding: 4px 10px 8px; word-break: break-all; }
+
+    /* ─── Tarjeta de dispositivo USB ─────────────────────────── */
+    .usb-card {
+        border: 1px solid var(--line2); background: var(--bg3);
+        padding: 14px 16px; display: flex; align-items: center; gap: 14px;
+        cursor: pointer; transition: border-color .18s, background .18s;
+    }
+    .usb-card:hover, .usb-card.active { border-color: var(--accent); background: var(--accent-bg); }
+    .usb-card-icon { color: var(--accent); flex-shrink: 0; }
+    .usb-card-icon svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .usb-card-info { flex: 1; min-width: 0; }
+    .usb-card-name { font: 700 13.5px/1.2 ui-sans-serif, system-ui, sans-serif; color: var(--text); }
+    .usb-card-meta { font: 500 11px/1.4 ui-monospace, monospace; color: var(--muted); margin-top: 3px; word-break: break-all; }
+    .usb-part {
+        margin-left: 16px; padding: 6px 10px;
+        border-left: 1px solid var(--line2);
+        font: 500 11px/1.4 ui-monospace, monospace; color: var(--muted);
+    }
+    .usb-part .mp { color: var(--accent); }
+    .usb-empty { padding: 18px; text-align: center; font: 13px/1.55 ui-monospace, monospace; color: var(--sub); border: 1px dashed var(--line2); }
+
+    /* ─── Enlace diagrama en topbar ─────────────────────────── */
+    .diag-link {
+        display: inline-flex; align-items: center; gap: 5px;
+        background: none; border: 1px solid transparent;
+        padding: 3px 9px; cursor: pointer;
+        font: 600 9.5px/1.6 ui-monospace, monospace; letter-spacing: .1em;
+        text-transform: uppercase; color: var(--muted);
+        transition: color .18s, border-color .18s;
+        white-space: nowrap;
+    }
+    .diag-link:hover { color: var(--accent); border-color: var(--accent-bd); }
+    .diag-link svg { width: 11px; height: 11px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ─── Modal: overlay ─────────────────────────────────────── */
+    .diag-overlay {
+        position: fixed; inset: 0; z-index: 900;
+        background: rgba(3,5,10,.88);
+        backdrop-filter: blur(6px);
+        display: flex; align-items: flex-start; justify-content: center;
+        padding: 24px 16px 40px;
+        overflow-y: auto;
+        opacity: 0; pointer-events: none;
+        transition: opacity .22s ease;
+    }
+    .diag-overlay.open { opacity: 1; pointer-events: all; }
+    .diag-modal {
+        position: relative;
+        background: var(--bg2);
+        border: 1px solid var(--line2);
+        box-shadow: 0 30px 80px rgba(0,0,0,.7);
+        width: 100%; max-width: 560px;
+        padding: 32px 28px 28px;
+        transform: translateY(12px);
+        transition: transform .22s ease;
+    }
+    .diag-overlay.open .diag-modal { transform: translateY(0); }
+    .diag-close {
+        position: absolute; top: 14px; right: 14px;
+        background: none; border: none; cursor: pointer;
+        color: var(--muted); padding: 4px; transition: color .18s;
+    }
+    .diag-close:hover { color: var(--text); }
+    .diag-close svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+    .diag-title {
+        font: 700 15px/1.2 ui-sans-serif, system-ui, sans-serif;
+        color: var(--text); letter-spacing: -.01em; margin-bottom: 6px;
+    }
+    .diag-sub {
+        font: 13px/1.55 ui-sans-serif, system-ui, sans-serif;
+        color: var(--muted); margin-bottom: 26px;
+    }
+
+    /* ─── Diagrama de flujo ─────────────────────────────────── */
+    .diag-flow {
+        display: flex; flex-direction: column; align-items: center; gap: 0;
+    }
+    /* Nodo rectangular */
+    .fc-box {
+        width: 100%; max-width: 380px;
+        border: 1px solid var(--accent-bd); background: var(--bg3);
+        padding: 11px 14px;
+        display: flex; align-items: center; gap: 12px;
+    }
+    .fc-box.gold  { border-color: var(--gold-bd); background: var(--gold-bg); }
+    .fc-box.ok    { border-color: var(--ok-bd);   background: var(--ok-bg); }
+    .fc-box.info  { border-color: rgba(122,184,212,.3); background: rgba(122,184,212,.06); }
+    .fc-box.muted { border-color: var(--line2); background: var(--bg3); }
+    /* Nodo de decisión (rombo CSS) */
+    .fc-diamond-wrap {
+        display: flex; flex-direction: column; align-items: center; width: 100%;
+    }
+    .fc-diamond {
+        position: relative;
+        width: 180px; height: 60px;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .fc-diamond::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: var(--gold-bg);
+        border: 1px solid var(--gold-bd);
+        transform: rotate(45deg) scale(.65);
+        border-radius: 2px;
+    }
+    .fc-diamond-text {
+        position: relative; z-index: 1;
+        font: 700 10px/1.3 ui-monospace, monospace;
+        color: var(--gold); letter-spacing: .06em;
+        text-align: center; text-transform: uppercase; padding: 0 8px;
+    }
+    /* Etiquetas de rama */
+    .fc-branch-labels {
+        display: flex; justify-content: space-between;
+        width: 100%; max-width: 380px; padding: 2px 30px;
+    }
+    .fc-branch-label {
+        font: 700 9px/1 ui-monospace, monospace;
+        letter-spacing: .14em; text-transform: uppercase;
+        color: var(--sub);
+    }
+    /* Flecha vertical */
+    .fc-arrow {
+        width: 1px; height: 18px;
+        background: var(--accent-bd);
+        position: relative;
+    }
+    .fc-arrow::after {
+        content: '';
+        position: absolute; bottom: -1px; left: 50%;
+        transform: translateX(-50%);
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 6px solid var(--accent-bd);
+    }
+    .fc-arrow.gold { background: var(--gold-bd); }
+    .fc-arrow.gold::after { border-top-color: var(--gold-bd); }
+    .fc-arrow.ok { background: var(--ok-bd); }
+    .fc-arrow.ok::after { border-top-color: var(--ok-bd); }
+    .fc-arrow.muted { background: var(--line2); }
+    .fc-arrow.muted::after { border-top-color: var(--line2); }
+    /* Ícono en nodo */
+    .fc-icon {
+        flex-shrink: 0; width: 30px; height: 30px;
+        display: flex; align-items: center; justify-content: center;
+        border: 1px solid var(--accent-bd); background: var(--accent-bg);
+        color: var(--accent);
+    }
+    .fc-icon svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .fc-icon.gold  { color: var(--gold);  background: var(--gold-bg);  border-color: var(--gold-bd); }
+    .fc-icon.ok    { color: var(--ok);    background: var(--ok-bg);    border-color: var(--ok-bd); }
+    .fc-icon.info  { color: #7ab8d4;      background: rgba(122,184,212,.08); border-color: rgba(122,184,212,.25); }
+    .fc-icon.muted { color: var(--muted); background: none;            border-color: var(--line2); }
+    /* Texto del nodo */
+    .fc-label {
+        font: 700 12.5px/1.2 ui-sans-serif, system-ui, sans-serif;
+        color: var(--text); margin-bottom: 2px;
+    }
+    .fc-desc {
+        font: 11.5px/1.45 ui-sans-serif, system-ui, sans-serif;
+        color: var(--muted);
+    }
+    /* Rama bifurcada (sí/no) */
+    .fc-split {
+        display: flex; align-items: flex-start;
+        width: 100%; max-width: 380px;
+    }
+    .fc-split-line-h {
+        height: 1px; background: var(--line2); flex: 1; margin-top: 18px;
+    }
+    .fc-split-col {
+        display: flex; flex-direction: column; align-items: center; flex: 1;
+    }
+    .fc-split-line-v {
+        width: 1px; height: 18px; background: var(--line2);
+        position: relative;
+    }
+    .fc-split-line-v::after {
+        content: '';
+        position: absolute; bottom: -1px; left: 50%;
+        transform: translateX(-50%);
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 6px solid var(--line2);
+    }
+    .fc-mini-box {
+        width: 100%; border: 1px solid var(--line2);
+        background: var(--bg3); padding: 8px 10px;
+        font: 11px/1.4 ui-sans-serif, system-ui, sans-serif;
+        color: var(--muted); text-align: center;
+    }
+    .fc-split-label {
+        font: 700 8.5px/1 ui-monospace, monospace;
+        letter-spacing: .14em; text-transform: uppercase;
+        color: var(--sub); margin-bottom: 4px;
+    }
+
+    /* ─── Separador USB ─────────────────────────────────────── */
+    .diag-divider {
+        display: flex; align-items: center; gap: 10px;
+        margin: 22px 0 20px; width: 100%;
+    }
+    .diag-divider::before, .diag-divider::after {
+        content: ''; flex: 1; height: 1px; background: var(--line2);
+    }
+    .diag-divider span {
+        font: 600 9px/1 ui-monospace, monospace; letter-spacing: .16em;
+        text-transform: uppercase; color: var(--sub); white-space: nowrap;
+    }
+    .diag-usb-note {
+        display: grid; grid-template-columns: 42px 1fr; gap: 0 14px;
+        align-items: center;
+        background: rgba(122,184,212,.06);
+        border: 1px solid rgba(122,184,212,.18);
+        padding: 14px; width: 100%;
+    }
+    .diag-usb-icon {
+        width: 42px; height: 42px;
+        display: flex; align-items: center; justify-content: center;
+        color: #7ab8d4;
+    }
+    .diag-usb-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .diag-usb-title { font: 700 13px/1.3 ui-sans-serif, system-ui, sans-serif; color: var(--text); margin-bottom: 4px; }
+    .diag-usb-desc  { font: 12.5px/1.55 ui-sans-serif, system-ui, sans-serif; color: var(--muted); }
+
+    /* ─── Generador de contraseña ───────────────────────────── */
+    .field-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 6px;
+    }
+    /* el label ya tiene su propio estilo de .field label, solo anulamos el margin */
+    .field-head label { margin-bottom: 0; }
+    .btn-gen {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        background: none;
+        border: 1px solid var(--line2);
+        color: var(--muted);
+        font: 600 10.5px/1 ui-monospace, monospace;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: color .18s, border-color .18s, background .18s;
+    }
+    .btn-gen {
+        color: var(--ok);
+        border-color: var(--ok-bd);
+        background: var(--ok-bg);
+    }
+    .btn-gen:hover {
+        color: #60b88c;
+        border-color: var(--ok);
+        background: rgba(58,158,111,.14);
+    }
+    /* strip con la contraseña generada — mismo patrón que .link-box */
+    .gen-strip {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        border: 1px solid var(--line2);
+        border-left: 2px solid var(--accent);
+        background: var(--bg);
+    }
+    .gen-strip code {
+        flex: 1;
+        padding: 10px 12px;
+        font: 12px/1.4 ui-monospace, monospace;
+        color: var(--text);
+        word-break: break-all;
+        min-width: 0;
+        user-select: all;
+    }
+    /* botón Copiar — mismo patrón que .btn-copy */
+    .gen-strip button {
+        padding: 10px 14px;
+        background: none;
+        border: none;
+        border-left: 1px solid var(--line2);
+        color: var(--accent);
+        font: 600 11px/1 ui-monospace, monospace;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background .18s;
+    }
+    .gen-strip button:hover { background: var(--accent-bg); }
+
+    /* ─── Tabs (cifrar / descifrar dispositivo) ─────────────── */
+    .tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        border: 1px solid var(--line2);
+        background: var(--bg);
+        overflow: hidden;
+    }
+    .tab {
+        padding: 13px 10px;
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        color: var(--muted);
+        font: 600 10.5px/1 ui-monospace, monospace;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        transition: color .18s, background .18s, border-color .18s;
+        white-space: nowrap;
+    }
+    .tab + .tab { border-left: 1px solid var(--line2); }
+    .tab svg {
+        flex-shrink: 0;
+        opacity: .6;
+        transition: opacity .18s;
+    }
+    .tab:hover {
+        color: var(--text);
+        background: var(--bg3);
+    }
+    .tab:hover svg { opacity: .9; }
+    .tab.active {
+        color: var(--accent);
+        background: var(--accent-bg);
+        border-bottom-color: var(--accent);
+    }
+    .tab.active svg { opacity: 1; }
+    /* Cifrar dispositivo — tono rojizo */
+    #usb-tab-enc.active {
+        color: #c07070;
+        background: var(--err-bg);
+        border-bottom-color: var(--err);
+    }
+
+    /* ─── Responsivo ─────────────────────────────────────────── */
+    @media (max-width: 520px) {
+        .output-opts  { grid-template-columns: 1fr; }
+        .row-btns     { grid-template-columns: 1fr; }
+        .share-grid   { grid-template-columns: repeat(3, 1fr); }
+        .topbar-right .topbar-ver { display: none; }
+        .diag-link span { display: none; }
+    }
+    @media (max-width: 360px) {
+        .share-grid { grid-template-columns: 1fr 1fr; }
+    }

@@ -1,0 +1,162 @@
+<?php
+/*
+ * Vista: layouts/footer.php
+ * Autor: C3r0d4y
+ */
+?>
+</main>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODAL: DIAGRAMA DE CIFRADO
+     ══════════════════════════════════════════════════════════ -->
+<div class="diag-overlay" id="diag-overlay" role="dialog" aria-modal="true" aria-label="Diagrama de cifrado">
+    <div class="diag-modal">
+
+        <button class="diag-close" id="diag-close-btn" aria-label="Cerrar">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+
+        <div class="diag-title">¿Cómo protegemos tu información?</div>
+        <div class="diag-sub">Todo el proceso ocurre dentro de tu propio dispositivo. Ninguna contraseña sale de tu pantalla.</div>
+
+        <div class="diag-flow">
+
+            <div class="fc-box">
+                <div class="fc-icon">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <div>
+                    <div class="fc-label">Seleccionas tu archivo</div>
+                    <div class="fc-desc">Foto, documento, video — cualquier formato. Nunca sale de tu dispositivo.</div>
+                </div>
+            </div>
+            <div class="fc-arrow"></div>
+
+            <div class="fc-box gold">
+                <div class="fc-icon gold">
+                    <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                </div>
+                <div>
+                    <div class="fc-label">Ingresas una contraseña</div>
+                    <div class="fc-desc">Solo tú la conoces. Nunca se guarda ni se envía al servidor.</div>
+                </div>
+            </div>
+            <div class="fc-arrow gold"></div>
+
+            <div class="fc-box">
+                <div class="fc-icon">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M8.46 8.46a5 5 0 0 0 0 7.07"/></svg>
+                </div>
+                <div>
+                    <div class="fc-label">PBKDF2-SHA-512 · 210 000 iteraciones</div>
+                    <div class="fc-desc">La contraseña se transforma en una llave de 256 bits. Resistente a fuerza bruta.</div>
+                </div>
+            </div>
+            <div class="fc-arrow"></div>
+
+            <div class="fc-box">
+                <div class="fc-icon">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <div>
+                    <div class="fc-label">AES-256-GCM — en tu navegador</div>
+                    <div class="fc-desc">El archivo se cifra con sal aleatoria e IV único. Ningún dato sale del dispositivo.</div>
+                </div>
+            </div>
+            <div class="fc-arrow ok"></div>
+
+            <div class="fc-box ok">
+                <div class="fc-icon ok">
+                    <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div>
+                    <div class="fc-label">Archivo cifrado <code style="color:var(--ok);font:inherit">.c3v</code> listo</div>
+                    <div class="fc-desc">Solo quien tenga la contraseña exacta podrá abrirlo.</div>
+                </div>
+            </div>
+            <div class="fc-arrow gold"></div>
+
+            <div class="fc-diamond-wrap">
+                <div class="fc-diamond">
+                    <div class="fc-diamond-text">¿Compartir<br>por enlace?</div>
+                </div>
+                <div class="fc-branch-labels">
+                    <span class="fc-branch-label">No → descarga</span>
+                    <span class="fc-branch-label">Sí → enlace</span>
+                </div>
+            </div>
+
+            <div class="fc-split">
+                <div class="fc-split-col">
+                    <div class="fc-split-line-h" style="flex:none;width:50%"></div>
+                    <div class="fc-split-line-v"></div>
+                    <div class="fc-split-label">Descarga directa</div>
+                    <div class="fc-mini-box">Guardas o compartes el .c3v por cualquier medio</div>
+                </div>
+                <div class="fc-split-col">
+                    <div class="fc-split-line-h" style="flex:none;width:50%"></div>
+                    <div class="fc-split-line-v"></div>
+                    <div class="fc-split-label">Enlace seguro</div>
+                    <div class="fc-mini-box">El blob cifrado sube al servidor · 1 descarga · expira en 5 min</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="diag-divider"><span>Modo dispositivo USB</span></div>
+        <div class="diag-usb-note">
+            <div class="diag-usb-icon">
+                <svg viewBox="0 0 24 24"><path d="M10 2h4v8h4l-6 6-6-6h4z"/><path d="M3 20h18"/><rect x="7" y="16" width="10" height="4" rx="1"/></svg>
+            </div>
+            <div>
+                <div class="diag-usb-title">Cifra todos los archivos de una USB</div>
+                <div class="diag-usb-desc">El proceso es idéntico, con una diferencia: se genera una sola llave para todo el dispositivo. Cada archivo se cifra uno a uno, y los originales se sobreescriben con ceros antes de borrarse para dificultar su recuperación forense.</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     AVISO DE SEGURIDAD
+     ══════════════════════════════════════════════════════════ -->
+<div class="sec-notice-wrap">
+    <div class="sec-notice" id="sec-notice">
+        <button class="sec-toggle" id="sec-toggle">
+            <span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline;vertical-align:middle;margin-right:7px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Aviso de seguridad — Léelo antes de usar
+            </span>
+            <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="sec-body" id="sec-body">
+            <p><strong>¿Cómo funciona el cifrado?</strong><br>
+            Cryptum utiliza <strong>AES-256-GCM</strong> con claves de 256 bits. La clave se deriva de tu contraseña mediante <strong>PBKDF2-SHA-512 con 210,000 iteraciones</strong>, un proceso intencionalmente lento para resistir ataques de fuerza bruta.</p>
+            <p><strong>¿Qué almacena el servidor?</strong><br>
+            Para la función de enlace seguro, el servidor almacena <em>únicamente el blob ya cifrado</em> — nunca la contraseña, nunca el archivo original. El servidor no puede leer el contenido. Los archivos se eliminan tras la primera descarga o a los 5 minutos.</p>
+            <p><strong>Riesgos que debes conocer:</strong><br>
+            · Si pierdes la contraseña, el archivo es <strong>matemáticamente irrecuperable</strong>.<br>
+            · La seguridad depende de la fortaleza de tu contraseña. Usa al menos 16 caracteres con símbolos.<br>
+            · En dispositivos con malware, la contraseña podría ser capturada antes del cifrado.</p>
+            <p><strong>Uso autorizado:</strong><br>
+            Herramienta destinada a contextos de seguridad nacional y protección de información sensible. Su uso para actividades ilícitas está prohibido. El usuario asume plena responsabilidad del uso y custodia de las contraseñas.</p>
+            <p style="color:var(--sub)">Implementación: Web Crypto API · AES-256-GCM · PBKDF2-SHA-512 · Sin dependencias externas · Código ejecutado localmente en el navegador.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ── Footer ──────────────────────────────────────────────────────────── -->
+<footer>
+    <div class="badge-row">
+        <span class="fbadge a">AES-256-GCM</span>
+        <span class="fbadge a">PBKDF2-SHA-512</span>
+        <span class="fbadge">Sin almacenamiento</span>
+        <span class="fbadge">Sin cookies</span>
+        <span class="fbadge">Cifrado local</span>
+        <span class="fbadge" style="color:var(--gold);border-color:var(--gold-bd)">C3r0d4y</span>
+    </div>
+</footer>
+
+<script src="<?= rtrim(BASE_URL, '/') ?>/assets/js/app.js"></script>
+</body>
+</html>
