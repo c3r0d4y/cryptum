@@ -287,6 +287,13 @@
     .share-btn.tg:hover { border-color: #26a1de; background: rgba(38,161,222,.06); }
     .share-btn.em  { border-color: var(--gold-bd); color: var(--gold); }
     .share-btn.em:hover { background: var(--gold-bg); }
+    .share-btn.sg  { border-color: rgba(58,118,240,.2); color: #3a76f0; }
+    .share-btn.sg:hover { border-color: #3a76f0; background: rgba(58,118,240,.06); }
+    /* Botón único de compartir — ocupa el ancho completo */
+    .share-grid-solo { grid-template-columns: 1fr !important; }
+    .share-btn-solo  { flex-direction: row; justify-content: center; gap: 10px; padding: 14px 20px; font-size: 13px; border-color: var(--accent); color: var(--accent); }
+    .share-btn-solo:hover { background: var(--accent-bg); }
+    .share-btn-solo svg  { width: 20px; height: 20px; }
 
     /* ─── Separador ──────────────────────────────────────────── */
     .divider { display: flex; align-items: center; gap: 12px; }
@@ -713,3 +720,13 @@
     @media (max-width: 360px) {
         .share-grid { grid-template-columns: 1fr 1fr; }
     }
+
+/* ─── Toast de notificación ─────────────────────────────── */
+#c3-toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+    background: var(--bg3); color: var(--text); border: 1px solid var(--accent);
+    padding: 10px 22px; font: 600 12px/1.4 ui-monospace, monospace;
+    letter-spacing: .05em; white-space: nowrap;
+    opacity: 0; transition: opacity .22s; pointer-events: none; z-index: 9999;
+}
+#c3-toast.visible { opacity: 1; }

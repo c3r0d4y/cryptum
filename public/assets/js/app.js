@@ -56,6 +56,20 @@ function setAlert(id, type, msg) {
 }
 function clearAlert(id) { const e=$(id); if(e){e.innerHTML='';e.style.display='none';} }
 
+// Muestra un mensaje flotante temporal en la parte inferior de la pantalla
+function showToast(msg, ms = 2500) {
+    let t = document.getElementById('c3-toast');
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'c3-toast';
+        document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.className = 'c3-toast visible';
+    clearTimeout(t._tid);
+    t._tid = setTimeout(() => t.classList.remove('visible'), ms);
+}
+
 /* ═══════════════════════════════════════════════════════════════
    NAVEGACIÓN DE VISTAS
    ═══════════════════════════════════════════════════════════════ */
@@ -233,54 +247,168 @@ const API = {
    COMPARTIR
    ═══════════════════════════════════════════════════════════════ */
 const Share = {
-    async native(file) {
-        if (!navigator.share) return false;
-        try {
-            if (navigator.canShare?.({ files: [file] })) {
-                await navigator.share({ files: [file], title: 'Archivo cifrado — Cryptum' });
-            } else {
-                await navigator.share({ title: 'Archivo cifrado — Cryptum', text: file.name });
-            }
-            return true;
-        } catch(e) { return e.name !== 'AbortError' ? false : true; }
+    // Abre un enlace con <a> temporal — más fiable que window.open en móvil y escritorio
+    openLink(url) {
+        const a = document.createElement('a');
+        a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+        a.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => document.body.removeChild(a), 100);
     },
-    whatsapp(url) { window.open('https://wa.me/?text=' + encodeURIComponent('🔒 Archivo cifrado Cryptum\n' + url + '\nNecesitas Cryptum y la contraseña para abrirlo.'), '_blank'); },
-    telegram(url) { window.open('https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent('Archivo cifrado con Cryptum. Necesitas la contraseña.'), '_blank'); },
-    facebook(url) { window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url), '_blank'); },
-    twitter(url)  { window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent('Archivo cifrado con Cryptum') + '&url=' + encodeURIComponent(url), '_blank'); },
-    email(url)    {
-        const s = encodeURIComponent('Archivo cifrado — Cryptum');
-        const b = encodeURIComponent('Te comparto un archivo cifrado con AES-256-GCM (Cryptum).\n\nEnlace de descarga única:\n' + url + '\n\nUsa Cryptum para descifrarlo con la contraseña que te compartiré por separado.');
-        window.location.href = `mailto:?subject=${s}&body=${b}`;
+
+    // Abre la app de escritorio y la versión web como respaldo en la misma acción del usuario.
+    // Ambas llamadas son síncronas dentro del click handler → el popup blocker no las bloquea.
+    // Si la app está instalada, el SO la activa al recibir el scheme custom;
+    // la pestaña web queda abierta de respaldo para el caso en que no esté instalada.
+    openAppWithFallback(appUrl, webUrl) {
+        this.openLink(appUrl);   // intenta app de escritorio (whatsapp://, tg://, etc.)
+        this.openLink(webUrl);   // abre versión web — garantizado, nunca bloqueado
+    },
+
+    // Share API nativa del sistema — en móvil muestra hoja con todas las apps instaladas
+    async native(payload) {
+        if (!navigator.share) return false;
+
+        if (payload instanceof File) {
+            // Intenta compartir el archivo real (.c3v)
+            if (navigator.canShare?.({ files: [payload] })) {
+                try {
+                    await navigator.share({ files: [payload], title: 'Archivo cifrado — C3r0d4y' });
+                    return true;
+                } catch(e) {
+                    if (e.name === 'AbortError') return true;
+                    // El SO no permite compartir este tipo de archivo;
+                    // cae en texto para que la hoja de apps se abra de todas formas
+                }
+            }
+            // Fallback: abre la hoja del sistema con el nombre del archivo como texto
+            try {
+                await navigator.share({
+                    title: 'Archivo cifrado — C3r0d4y',
+                    text: payload.name + '\nDescifra con C3r0d4y. Comparte la contraseña por separado.'
+                });
+            } catch(e) { /* AbortError u otro — el usuario canceló o hay error de contexto */ }
+            return true;
+        }
+
+        // Enlace seguro — comparte la URL directamente
+        try {
+            await navigator.share({ title: 'Enlace seguro — C3r0d4y', url: payload });
+        } catch(e) { /* AbortError */ }
+        return true;
+    },
+
+    // Intenta compartir el archivo real; devuelve true si lo logró (o usuario canceló)
+    async tryShareFile(file, text) {
+        if (!navigator.share || !navigator.canShare?.({ files: [file] })) return false;
+        try {
+            await navigator.share({ files: [file], title: 'Archivo cifrado — C3r0d4y', text });
+            return true;
+        } catch(e) {
+            return e.name === 'AbortError'; // cancelado por usuario = manejado
+        }
+    },
+
+    whatsapp(text) {
+        const t = encodeURIComponent(text);
+        // whatsapp://send → abre WhatsApp Desktop si está instalado
+        // api.whatsapp.com/send → URL oficial para compartir texto sin destinatario fijo
+        this.openAppWithFallback(
+            'whatsapp://send?text=' + t,
+            'https://api.whatsapp.com/send?text=' + t
+        );
+    },
+    telegram(text, url) {
+        const t = encodeURIComponent(text);
+        const u = url ? encodeURIComponent(url) : '';
+        const appQ = u ? 'url=' + u + '&text=' + t : 'text=' + t;
+        const webQ = u ? 'url=' + u + '&text=' + t : 'url=&text=' + t;
+        // tg://msg_url → abre Telegram Desktop si está instalado
+        // t.me/share/url → URL oficial de compartir de Telegram Web
+        this.openAppWithFallback(
+            'tg://msg_url?' + appQ,
+            'https://t.me/share/url?' + webQ
+        );
+    },
+    async signal(text) {
+        // Signal no tiene URL de compartir público; se copia y se pega en la app
+        const ok = await this.clipboard(text);
+        showToast(ok ? '✓ Copiado — pega en Signal' : 'No se pudo copiar');
+    },
+    email(subject, body) {
+        window.location.href = 'mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     },
     async clipboard(text) {
         try { await navigator.clipboard.writeText(text); return true; }
         catch { return false; }
     },
+
     buildGrid(containerId, url, isFile = false, blob = null) {
         const c = $(containerId);
         if (!c) return;
-        const btns = [];
+        c.innerHTML = '';
 
-        if (isFile && blob) {
-            btns.push({
-                label: 'Compartir', cls: '', icon: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>',
-                fn: () => this.native(blob)
-            });
+        // Móvil / navegadores con Web Share API — un solo botón ancho completo
+        if (navigator.share) {
+            c.classList.add('share-grid-solo');
+            const btn = document.createElement('button');
+            btn.className = 'share-btn share-btn-solo';
+            btn.innerHTML =
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+                '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>' +
+                '<line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>' +
+                '</svg>Compartir';
+            btn.addEventListener('click', () => this.native(isFile && blob ? blob : url));
+            c.appendChild(btn);
+            return;
         }
-        if (!isFile) {
-            btns.push({ label: 'WhatsApp', cls: 'wa',  icon: '<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>', fn: () => this.whatsapp(url) });
-            btns.push({ label: 'Telegram', cls: 'tg',  icon: '<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>', fn: () => this.telegram(url) });
-            btns.push({ label: 'Correo',   cls: 'em',  icon: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>', fn: () => this.email(url) });
-            btns.push({ label: 'Twitter',  cls: '',    icon: '<path d="M4 4l11.733 16H20L8.267 4zM4 20l6.768-6.768M20 4l-6.768 6.768"/>', fn: () => this.twitter(url) });
-        }
+        c.classList.remove('share-grid-solo');
 
-        c.innerHTML = btns.map((b, i) =>
-            `<button class="share-btn ${b.cls}" onclick="window._shareActions[${i}]()">${
-                `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${b.icon}</svg>`
-            }${b.label}</button>`
-        ).join('');
-        window._shareActions = btns.map(b => b.fn);
+        // Escritorio sin Web Share API — botones individuales por plataforma
+        const fileText = '🔒 Archivo cifrado con C3r0d4y. La contraseña te la envío por separado.';
+        const linkText = '🔒 Enlace de descarga única (expira en 5 min):\n' + url + '\n\nDescifra con C3r0d4y. La contraseña va por un canal separado.';
+        const shareText = isFile ? fileText : linkText;
+
+        const emailSubj = isFile ? 'Archivo cifrado — C3r0d4y' : 'Enlace seguro de descarga — C3r0d4y';
+        const emailBody = isFile
+            ? 'Te envío un archivo cifrado con AES-256-GCM (C3r0d4y).\n\nNecesitas C3r0d4y para descifrarlo. La contraseña te la envío por un canal separado.'
+            : 'Enlace de descarga única (expira en 5 min):\n' + url + '\n\nNecesitas C3r0d4y para descifrarlo. La contraseña te la envío por un canal separado.';
+
+        const btns = [
+            {
+                label: 'WhatsApp', cls: 'wa',
+                icon: '<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>',
+                fn: () => this.whatsapp(shareText)
+            },
+            {
+                label: 'Telegram', cls: 'tg',
+                icon: '<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+                fn: () => isFile
+                    ? this.telegram(fileText)
+                    : this.telegram('C3r0d4y · archivo cifrado AES-256-GCM · la contraseña va por separado', url)
+            },
+            {
+                label: 'Signal', cls: 'sg',
+                icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+                fn: () => this.signal(shareText)
+            },
+            {
+                label: 'Correo', cls: 'em',
+                icon: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+                fn: () => this.email(emailSubj, emailBody)
+            },
+        ];
+
+        btns.forEach(b => {
+            const btn = document.createElement('button');
+            btn.className = 'share-btn ' + b.cls;
+            btn.innerHTML =
+                `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${b.icon}</svg>` +
+                b.label;
+            btn.addEventListener('click', b.fn);
+            c.appendChild(btn);
+        });
     }
 };
 
@@ -398,9 +526,6 @@ const Res = {
         // Mostrar panel descarga por defecto
         this.selectOpt('dl');
         Nav.go('result');
-        // Botón de compartir archivo nativo (descarga directa)
-        const file = new File([this.blob], this.name, { type:'application/octet-stream' });
-        Share.buildGrid('dl-share-grid', '', true, file);
     },
 
     selectOpt(opt) {
@@ -739,6 +864,7 @@ const USB_UI = {
     renderDevices(data) {
         const devices   = data.devices || [];
         const extraMnts = data.extra_mounts || [];
+        const container = $('usb-device-list');
         let html = '';
 
         if (devices.length === 0 && extraMnts.length === 0) {
@@ -746,7 +872,8 @@ const USB_UI = {
         } else {
             for (const dev of devices) {
                 const label = [dev.vendor, dev.model].filter(Boolean).join(' ').trim() || dev.name;
-                html += `<div class="usb-card" onclick="USB_UI.selectDevice(this,'')">
+                // data-mp guarda el mountpoint; el click se enlaza con addEventListener tras insertar el HTML
+                html += `<div class="usb-card" data-mp="">
                     <span class="usb-card-icon"><svg viewBox="0 0 24 24"><path d="M10 2h4v8h4l-6 6-6-6h4z"/><path d="M3 20h18"/><rect x="7" y="16" width="10" height="4" rx="1"/></svg></span>
                     <span class="usb-card-info">
                         <span class="usb-card-name">${label}</span>
@@ -754,12 +881,12 @@ const USB_UI = {
                     </span></div>`;
                 for (const p of dev.parts) {
                     const mpInfo = p.mounted ? `<span class="mp">${p.mountpoint}</span>` : 'no montada';
-                    html += `<div class="usb-part" onclick="USB_UI.selectDevice(this,'${p.mountpoint||''}')">
+                    html += `<div class="usb-part" data-mp="${p.mountpoint||''}">
                         └ /dev/${p.name} · ${p.size} · ${p.fstype||'?'} · ${mpInfo}</div>`;
                 }
             }
             for (const m of extraMnts) {
-                html += `<div class="usb-card" onclick="USB_UI.selectDevice(this,'${m.mountpoint}')">
+                html += `<div class="usb-card" data-mp="${m.mountpoint}">
                     <span class="usb-card-icon"><svg viewBox="0 0 24 24"><path d="M10 2h4v8h4l-6 6-6-6h4z"/><path d="M3 20h18"/><rect x="7" y="16" width="10" height="4" rx="1"/></svg></span>
                     <span class="usb-card-info">
                         <span class="usb-card-name">${m.device}</span>
@@ -767,7 +894,11 @@ const USB_UI = {
                     </span></div>`;
             }
         }
-        $('usb-device-list').innerHTML = html;
+        container.innerHTML = html;
+        // Listener sin inline handler para cumplir la política CSP script-src 'self'
+        container.querySelectorAll('.usb-card, .usb-part').forEach(el => {
+            el.addEventListener('click', () => USB_UI.selectDevice(el, el.dataset.mp));
+        });
     },
 
     selectDevice(el, mountpoint) {
