@@ -137,8 +137,6 @@
                         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                         Descargar archivo cifrado
                     </button>
-                    <div class="divider" style="margin-top:14px"><span>Compartir por</span></div>
-                    <div class="share-grid" id="dl-share-grid" style="margin-top:10px"></div>
                     <div class="alert alert-warn" style="margin-top:12px">
                         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                         <span>Comparte el archivo y la contraseña por <strong>canales separados</strong> para mayor seguridad.</span>
@@ -162,7 +160,6 @@
                             <div class="timer-value" id="lnk-seconds">05:00</div>
                             <div class="timer-label">Expira en</div>
                         </div>
-                        <div class="divider"><span>Compartir enlace por</span></div>
                         <div class="share-grid" id="lnk-share-grid"></div>
                         <div class="alert alert-warn">
                             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
